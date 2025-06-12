@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Сервера | RedCase{% endblock %}
+
+{% block content %}
+<style>
+  .vm-row {
+    background-color: #1a1a1a;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .vm-row:hover {
+    background-color: #2a0000;
+  }
+
+  .vm-table th {
+    color: #ff4c4c;
+    font-weight: 700;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  .vm-table td {
+    color: #f0f0f0;
+  }
+
+  .vm-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 10px;
+  }
+
+  .badge-season {
+    font-size: 0.75rem;
+    background-color: #ff1a1a;
+  }
+
+  .section-title {
+    color: #ff4c4c;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-underline {
+    border-bottom: 2px solid #ff1a1a;
+    margin-bottom: 1.5rem;
+    width: 100%;
+  }
+</style>
+
+<div class="container-fluid p-0">
+  <h2 class="section-title">🖥 Список доступных серверов</h2>
+  <div class="section-underline"></div>
+
+  <div class="table-responsive">
+    <table class="table table-dark table-hover align-middle vm-table" style="border-collapse: separate; border-spacing: 0 1rem;">
+      <thead>
+        <tr>
+          <th class="text-start ps-4">Сервер</th>
+          <th class="text-center">Сложность</th>
+          <th class="text-center">Очки</th>
+          <th class="text-center">Решений</th>
+          <th class="text-center">IP-адрес</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vm in virtual_machines %}
+        <tr class="vm-row">
+          <td class="text-start px-4 d-flex align-items-center">
+            <img src="{{ url_for('static', filename='os_icons/' + vm.platform + '.png') }}" alt="{{ vm.platform }}" class="vm-icon">
+            <span class="fw-bold text-white">{{ vm.name }}</span>
+            {% if vm.seasonal_label %}
+              <span class="badge badge-season ms-2">{{ vm.seasonal_label }}</span>
+            {% endif %}
+          </td>
+          <td class="text-uppercase fw-semibold text-light text-center">{{ vm.difficulty }}</td>
+          <td class="text-center">{{ vm.score }}</td>
+          <td class="text-center">{{ vm.solve_count }}</td>
+          <td class="text-center">{{ vm.ip_address or "—" }}</td>
+          <td class="text-center">
+            <a href="{{ url_for('server_details', vm_uuid=vm.uuid) }}" class="btn btn-sm btn-outline-danger">Подробнее</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

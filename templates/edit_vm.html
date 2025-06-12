@@ -1,0 +1,87 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Редактировать ВМ{% endblock %}
+
+{% block content %}
+<style>
+  .form-control, .form-select, textarea {
+    background-color: #1a1a1a;
+    color: #ffcccc;
+    border: 1px solid #ff1a1a;
+  }
+
+  .form-control::placeholder, textarea::placeholder {
+    color: #ff9999;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  .btn-danger {
+    background-color: #770000;
+    border-color: #ff0000;
+  }
+
+  .btn-danger:hover {
+    background-color: #ff0000;
+    border-color: #ff0000;
+  }
+
+  .btn-secondary {
+    background-color: #333;
+    border-color: #555;
+    color: #ccc;
+  }
+
+  .btn-secondary:hover {
+    background-color: #444;
+    border-color: #666;
+    color: white;
+  }
+</style>
+
+<div class="container-fluid p-0">
+  <h2 class="mb-4" style="color: #ff4c4c; font-weight: 700;">Редактировать виртуальную машину</h2>
+  <form method="POST">
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <input type="text" name="name" class="form-control" value="{{ vm.name }}" placeholder="Имя ВМ" required>
+      </div>
+      <div class="col-md-4">
+        <input type="text" name="flag" class="form-control" value="{{ vm.flag }}" placeholder="Флаг (например, Flag{...})" required>
+      </div>
+      <div class="col-md-4">
+        <select name="platform" class="form-select" required>
+          <option value="Linux" {% if vm.platform == 'Linux' %}selected{% endif %}>Linux</option>
+          <option value="Windows" {% if vm.platform == 'Windows' %}selected{% endif %}>Windows</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="difficulty" class="form-control" required>
+          {% for i in range(1, 6) %}
+            <option value="{{ i }}" {% if vm.difficulty == i %}selected{% endif %}>{{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input type="number" name="score" class="form-control" placeholder="Очки" value="{{ vm.score }}" required>
+      </div>
+      <div class="col-md-4">
+        <input type="text" name="ip_address" class="form-control" placeholder="IP-адрес" value="{{ vm.ip_address }}" required>
+      </div>
+      <div class="col-12">
+        <textarea name="description" class="form-control" rows="3" placeholder="Описание" required>{{ vm.description }}</textarea>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-danger">Сохранить изменения</button>
+    <a href="{{ url_for('servers_info') }}" class="btn btn-secondary">Отмена</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль — RedCase{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <div class="row" style="min-height: 100%;">
+    <!-- Левая колонка: центрирование по вертикали и горизонтали -->
+    <div class="col-md-4 d-flex flex-column align-items-center justify-content-center text-center mb-4">
+      <h2 style="color: #ff1a1a; font-weight: 900;">{{ user.nickname }}</h2>
+
+      <img src="{{ avatar_url or url_for('static', filename='avatars/default_avatar.png') }}"
+           alt="Avatar" class="rounded-circle"
+           style="width: 150px; height: 150px; border: 4px solid #ff1a1a; box-shadow: 0 0 20px #ff1a1a; margin-bottom: 20px;">
+
+      {% if user.vpn_config %}
+      <div class="text-center">
+        <h4 style="color: #ff1a1a;">VPN-доступ</h4>
+        <p style="color: #ccc;">Ваш конфигурационный файл:<br><strong>{{ user.vpn_config }}</strong></p>
+        <a href="{{ url_for('download_vpn') }}" class="btn btn-danger mt-2">Скачать VPN-конфиг</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Правая колонка: информация об аккаунте -->
+    <div class="col-md-8">
+      <h3 style="color: #ff1a1a; border-bottom: 2px solid #ff1a1a; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">
+        Информация об аккаунте
+      </h3>
+
+      <p style="color: #ccc;">Имя: <strong>{{ user.first_name or "—" }}</strong></p>
+      <p style="color: #ccc;">Фамилия: <strong>{{ user.last_name or "—" }}</strong></p>
+      <p style="color: #ccc;">Email: <strong>{{ user.email or "—" }}</strong></p>
+      <p style="color: #ccc;">Telegram: <strong>{{ user.telegram }}</strong></p>
+      <p style="color: #ccc;">Описание: <br><em>{{ user.profile_description or "Пусто" }}</em></p>
+      <p style="color: #ccc;">Пригласительный код: <strong>{{ user.invite_code }}</strong></p>
+      <p style="color: #ccc;">Использованный код: <strong>{{ user.used_invite_code }}</strong></p>
+      <p style="color: #ccc;">Администратор: <strong>{{ 'Да' if user.is_admin else 'Нет' }}</strong></p>
+      <p style="color: #ccc;">Создатель: <strong>{{ 'Да' if user.is_creator else 'Нет' }}</strong></p>
+
+      <h3 class="mt-4" style="color: #ff1a1a; border-bottom: 2px solid #ff1a1a; padding-bottom: 0.5rem;">Статистика</h3>
+      <p style="color: #ccc;">Firstbloods: <strong>{{ user.first_bloods }}</strong></p>
+      <p style="color: #ccc;">Выполнено машин: <strong>{{ user.solved_vms }}</strong></p>
+      <p style="color: #ccc;">Очки: <strong>{{ user.score }}</strong></p>
+    </div>
+  </div>
+</div>
+{% endblock %}

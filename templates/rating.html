@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Рейтинг пользователей{% endblock %}
+
+{% block content %}
+<style>
+  .rating-table {
+    background-color: #1a1a1a !important;
+    color: #ffcccc !important;
+    border-color: #ff1a1a !important;
+  }
+
+  .rating-table th {
+    background-color: #550000 !important;
+    color: #ffdddd !important;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .rating-table td {
+    background-color: #1a1a1a !important;
+    color: #ffcccc !important;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .rating-table tbody tr:nth-child(odd) {
+    background-color: #2a2a2a !important;
+  }
+
+  .rating-table tbody tr:hover {
+    background-color: #3a0000 !important;
+  }
+
+  .user-link {
+    color: #ff4c4c;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .user-link:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="container-fluid p-0">
+  <h2 class="mb-4" style="color: #ff4c4c; font-weight: 700; border-bottom: 2px solid #ff1a1a; padding-bottom: 0.5rem;">
+    🏆 Рейтинг пользователей
+  </h2>
+  <div class="table-responsive">
+    <table class="table table-bordered rating-table align-middle">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Имя</th>
+          <th scope="col">Очки</th>
+          <th scope="col">Первое решение</th>
+          <th scope="col">Решено заданий</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if users %}
+          {% for user in users %}
+            <tr>
+              <th scope="row">{{ loop.index }}</th>
+              <td>
+                {% if user.nickname %}
+                  <a href="{{ url_for('public_profile', user_uuid=user.uuid) }}" class="user-link">{{ user.nickname }}</a>
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>{{ user.score }}</td>
+              <td>{{ user.first_bloods or 0 }}</td>
+              <td>{{ user.solved_vms or 0 }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center" style="color: #999;">Пользователи не найдены</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

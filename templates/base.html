@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}RedCase{% endblock %}</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      background-color: #0a0a0a;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #eee;
+      overflow: hidden;
+    }
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background-color: #121212;
+      box-shadow: 0 0 15px #ff1a1a;
+      color: #ff1a1a;
+      font-weight: 900;
+      font-size: 1.8rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      user-select: none;
+    }
+    .sidebar {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      width: 250px;
+      height: calc(100% - 60px);
+      background-color: #121212;
+      box-shadow: 2px 0 10px #ff1a1a;
+      display: flex;
+      flex-direction: column;
+      padding-top: 2rem;
+      gap: 1rem;
+      z-index: 999;
+    }
+    .sidebar-link {
+      display: block;
+      background-color: transparent;
+      color: #ff1a1a;
+      font-weight: 400;
+      font-size: 1.1rem;
+      padding: 1rem 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      text-align: left;
+      text-decoration: none;
+      transition: background-color 0.3s, box-shadow 0.3s, color 0.3s;
+      border-left: 4px solid transparent;
+    }
+    .sidebar-link:hover,
+    .sidebar-link.active {
+      background-color: #ff1a1a;
+      color: #121212;
+      box-shadow: inset 4px 0 0 #ff4c4c;
+      border-left-color: #ff4c4c;
+    }
+    .sidebar-link.mt-auto {
+      margin-top: auto;
+    }
+    main {
+      margin-left: 260px;
+      margin-top: 60px;
+      height: calc(100% - 60px);
+      padding: 2rem 3rem;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>RedCase</header>
+
+  <nav class="sidebar" aria-label="Главное меню">
+    <a href="/" class="sidebar-link {% if active_page == 'index' %}active{% endif %}">Главная</a>
+    <a href="/rating" class="sidebar-link {% if active_page == 'rating' %}active{% endif %}">Рейтинг</a>
+    <a href="/servers" class="sidebar-link {% if active_page == 'servers' %}active{% endif %}">Сервера</a>
+    <a href="/profile" class="sidebar-link {% if active_page == 'profile' %}active{% endif %}">Профиль</a>
+    <a href="/settings" class="sidebar-link {% if active_page == 'settings' %}active{% endif %}">Настройки</a>
+
+    <form action="{{ url_for('logout') }}" method="post" style="margin: 0;">
+      <button type="submit" class="sidebar-link" style="background: none; border: none; width: 100%; text-align: left; padding: 1rem 2rem; cursor: pointer; color: #ff1a1a; font-weight: 700; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.15em;">
+        Выход
+      </button>
+    </form>
+
+    <a href="/about" class="sidebar-link mt-auto {% if active_page == 'about' %}active{% endif %}">О проекте</a>
+  </nav>
+
+  <main role="main">
+    {% block content %}
+    <!-- Контент страницы будет вставляться сюда -->
+    {% endblock %}
+  </main>
+</body>
+</html>

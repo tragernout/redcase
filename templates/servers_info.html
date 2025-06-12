@@ -1,0 +1,232 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Управление серверами{% endblock %}
+
+{% block content %}
+<style>
+  .rating-table {
+    background-color: #1a1a1a !important;
+    color: #ffcccc !important;
+    border-color: #ff1a1a !important;
+  }
+
+  .rating-table th {
+    background-color: #550000 !important;
+    color: #ffdddd !important;
+  }
+
+  .rating-table td {
+    background-color: #1a1a1a !important;
+    color: #ffcccc !important;
+  }
+
+  .rating-table tbody tr:nth-child(odd) {
+    background-color: #2a2a2a !important;
+  }
+
+  .rating-table tbody tr:hover {
+    background-color: #3a0000 !important;
+  }
+
+  .action-btn {
+    background-color: #770000;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 5px;
+  }
+
+  .action-btn:hover {
+    background-color: #ff0000;
+  }
+
+  .form-control, .form-select, textarea {
+    background-color: #1a1a1a;
+    color: #ffcccc;
+    border: 1px solid #ff1a1a;
+  }
+
+  .form-control::placeholder, textarea::placeholder {
+    color: #ff9999;
+  }
+
+  hr.border-danger {
+    border-top: 2px solid #ff1a1a;
+  }
+
+  .user-link {
+    color: #ff4c4c;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .user-link:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="container-fluid p-0">
+  <h2 class="mb-4" style="color: #ff4c4c; font-weight: 700;">Управление серверами</h2>
+
+  <h3 class="mt-4 mb-3" style="color: #ff4c4c;">Добавить виртуальную машину</h3>
+  <form method="POST" action="{{ url_for('add_virtual_machine') }}">
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <input type="text" name="name" class="form-control" placeholder="Имя ВМ" autocomplete="off" required>
+      </div>
+      <div class="col-md-4">
+        <input type="text" name="flag" class="form-control" placeholder="Флаг (например, REDCASE{...})" autocomplete="off" required>
+      </div>
+      <div class="col-md-4">
+        <select name="platform" class="form-select" required>
+          <option value="" disabled selected>Платформа</option>
+          <option value="Linux">Linux</option>
+          <option value="Windows">Windows</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="difficulty" class="form-control" required>
+          <option value="" disabled selected>Сложность</option>
+          <option value="1">1 — Очень легко</option>
+          <option value="2">2 — Легко</option>
+          <option value="3">3 — Средне</option>
+          <option value="4">4 — Сложно</option>
+          <option value="5">5 — Очень сложно</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input name="score" class="form-control" placeholder="Очки" autocomplete="off" required>
+      </div>
+      <div class="col-md-4">
+        <input type="text" name="ip_address" class="form-control" placeholder="IP-адрес" autocomplete="off" required>
+      </div>
+      <div class="col-12">
+        <textarea name="description" class="form-control" placeholder="Описание" rows="3" autocomplete="off" required></textarea>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-danger">Добавить ВМ</button>
+  </form>
+
+  <hr class="my-4 border-danger">
+
+  <h3 class="mb-3" style="color: #ff4c4c;">Виртуальные машины VirtualBox</h3>
+  <div class="table-responsive mb-5">
+    <table class="table table-bordered rating-table align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Имя ВМ</th>
+          <th>Состояние</th>
+          <th>Интерфейсы</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vm in vms %}
+        <tr>
+          <th scope="row">{{ loop.index }}</th>
+          <td>{{ vm.name }}</td>
+          <td>{{ vm.state }}</td>
+          <td>
+            {% if vm.interfaces %}
+              <ul>
+              {% for iface in vm.interfaces %}
+                <li><b>{{ iface.interface }}</b>: {{ iface.ip }}</li>
+              {% endfor %}
+              </ul>
+            {% else %}
+              <i>нет данных</i>
+            {% endif %}
+          </td>
+          <td>
+            <form method="post" action="{{ url_for('vm_action', vm_name=vm.name, action='start') }}" style="display:inline;">
+              <button class="action-btn" type="submit">Запустить</button>
+            </form>
+            <form method="post" action="{{ url_for('vm_action', vm_name=vm.name, action='poweroff') }}" style="display:inline;">
+              <button class="action-btn" type="submit">Выключить</button>
+            </form>
+            <form method="post" action="{{ url_for('vm_action', vm_name=vm.name, action='acpipowerbutton') }}" style="display:inline;">
+              <button class="action-btn" type="submit">ACPI Выкл.</button>
+            </form>
+            <form method="post" action="{{ url_for('vm_action', vm_name=vm.name, action='reset') }}" style="display:inline;">
+              <button class="action-btn" type="submit">Reset</button>
+            </form>
+            <form method="post" action="{{ url_for('vm_action', vm_name=vm.name, action='delete') }}" style="display:inline;" onsubmit="return confirmDelete('{{ vm.name }}');">
+              <button class="action-btn" type="submit">Удалить</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center">Нет виртуальных машин</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <small class="text-muted">
+      * Возможна проблема с отображением IP-адреса (нужны Guest Additions или поддержка ОС)<br>
+      * RESET работает только при выключенной ВМ
+    </small>
+  </div>
+
+  <h3 class="mb-3" style="color: #ff4c4c;">Виртуальные машины из базы данных</h3>
+  <div class="table-responsive">
+    <table class="table table-bordered rating-table align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Имя</th>
+          <th>Платформа</th>
+          <th>Сложность</th>
+          <th>IP</th>
+          <th>Очки</th>
+          <th>Сдано</th>
+          <th>First blood</th>
+          <th>Автор</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vm in virtual_machines %}
+        <tr>
+          <th scope="row">{{ loop.index }}</th>
+          <td>{{ vm.name }}</td>
+          <td>{{ vm.platform }}</td>
+          <td>{{ vm.difficulty }}</td>
+          <td>{{ vm.ip_address }}</td>
+          <td>{{ vm.score }}</td>
+          <td>{{ vm.solve_count }}</td>
+          <td>
+            {% if vm.first_blood_uuid %}
+              <a href="{{ url_for('public_profile', user_uuid=vm.first_blood_uuid) }}" class="user-link">{{ vm.first_blood_name }}</a>
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td>
+            {% if vm.author_uuid %}
+              <a href="{{ url_for('public_profile', user_uuid=vm.author_uuid) }}" class="user-link">{{ vm.author_name }}</a>
+            {% else %}
+              Неизвестен
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('edit_vm', uuid=vm.uuid) }}" class="action-btn">Редактировать</a>
+            <form method="POST" action="{{ url_for('delete_vm', uuid=vm.uuid) }}" style="display:inline;" onsubmit="return confirmDelete('{{ vm.name }}');">
+              <button class="action-btn" type="submit">Удалить</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="10" class="text-center">Нет данных в базе</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function confirmDelete(vmName) {
+    return confirm("Вы уверены, что хотите УДАЛИТЬ ВМ \"" + vmName + "\"?\nЭто действие необратимо!");
+  }
+</script>
+{% endblock %}

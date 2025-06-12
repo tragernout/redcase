@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}Настройки профиля — RedCase{% endblock %}
+
+{% block content %}
+<style>
+  .form-control, .form-select, textarea {
+    background-color: #1a1a1a;
+    color: #ffcccc;
+    border: 1px solid #ff1a1a;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+  }
+
+  .form-control::placeholder, textarea::placeholder {
+    color: #ff9999;
+  }
+
+  .form-control:focus, textarea:focus {
+    border-color: #ff4c4c;
+    box-shadow: 0 0 6px #ff4c4c;
+    background-color: #1f1f1f;
+    color: #fff;
+  }
+
+  .settings-header {
+    color: #ff4c4c;
+    font-weight: 600;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 6px #ff1a1a;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .btn-submit {
+    width: 100%;
+    background-color: #ff1a1a;
+    border: none;
+    padding: 0.5rem 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 30px;
+    color: white;
+    letter-spacing: 0.05em;
+    box-shadow: 0 0 10px #ff3333;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }
+
+  .btn-submit:hover {
+    background-color: #cc0000;
+    box-shadow: 0 0 15px #ff4c4c;
+    transform: scale(1.03);
+  }
+
+  .alert-custom {
+    color: #ff4c4c;
+    font-weight: 500;
+    background-color: #1f1f1f;
+    border: 1px solid #ff1a1a;
+    border-radius: 8px;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    box-shadow: 0 0 6px #ff3333;
+  }
+
+  .settings-container {
+    max-width: 640px;
+    margin: 1.5rem auto;
+    background-color: #121212;
+    border-radius: 16px;
+    box-shadow: 0 0 20px #ff1a1a;
+    padding: 1.5rem 2rem;
+  }
+
+  hr.border-danger {
+    border-top: 2px solid #ff1a1a;
+    margin: 1.5rem 0;
+  }
+
+  .form-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #ffcccc;
+    margin-bottom: 0.25rem;
+  }
+
+  .mb-3 {
+    margin-bottom: 0.9rem !important;
+  }
+</style>
+
+<div class="settings-container">
+  <h2 class="settings-header">Настройки профиля</h2>
+  <form method="POST" action="{{ url_for('update_settings') }}" enctype="multipart/form-data">
+    <div class="mb-3">
+      <label for="nickname" class="form-label">Nickname *</label>
+      <input type="text" id="nickname" name="nickname" class="form-control" value="{{ user.nickname }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="first_name" class="form-label">Имя</label>
+      <input type="text" id="first_name" name="first_name" class="form-control" value="{{ user.first_name or '' }}">
+    </div>
+
+    <div class="mb-3">
+      <label for="last_name" class="form-label">Фамилия</label>
+      <input type="text" id="last_name" name="last_name" class="form-control" value="{{ user.last_name or '' }}">
+    </div>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" id="email" name="email" class="form-control" value="{{ user.email or '' }}">
+    </div>
+
+    <div class="mb-3">
+      <label for="telegram" class="form-label">Telegram *</label>
+      <input type="text" id="telegram" name="telegram" class="form-control" value="{{ user.telegram }}" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Новый пароль *</label>
+      <input type="password" id="password" name="password" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="description" class="form-label">Описание профиля</label>
+      <textarea id="description" name="description" class="form-control" rows="2">{{ user.profile_description or '' }}</textarea>
+    </div>
+
+    <div class="mb-3">
+      <label for="avatar" class="form-label">Аватар</label>
+      <input type="file" id="avatar" name="avatar" class="form-control" accept="image/png, image/jpeg">
+    </div>
+
+    {% if error %}
+      <div class="alert-custom">{{ error }}</div>
+    {% elif message %}
+      <div class="alert-custom" style="color: #00cc66; border-color: #00cc66;">{{ message }}</div>
+    {% endif %}
+
+    <hr class="border-danger">
+
+    <button type="submit" class="btn-submit">Сохранить</button>
+  </form>
+</div>
+{% endblock %}

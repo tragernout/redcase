@@ -1,0 +1,171 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Управление пользователями{% endblock %}
+
+{% block content %}
+<style>
+  .rating-table {
+    background-color: #1a1a1a !important;
+    color: #ffcccc !important;
+    border-color: #ff1a1a !important;
+  }
+
+  .rating-table th {
+    background-color: #550000 !important;
+    color: #ffdddd !important;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .rating-table td {
+    background-color: #1a1a1a !important;
+    color: #ffcccc !important;
+    text-align: center;
+    vertical-align: middle;
+    word-break: break-word;
+  }
+
+  .rating-table tbody tr:nth-child(odd) {
+    background-color: #2a2a2a !important;
+  }
+
+  .rating-table tbody tr:hover {
+    background-color: #3a0000 !important;
+  }
+
+  .action-btn {
+    background-color: #770000;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .action-btn:hover {
+    background-color: #ff0000;
+  }
+
+  .form-control, .form-select, textarea {
+    background-color: #1a1a1a;
+    color: #ffcccc;
+    border: 1px solid #ff1a1a;
+  }
+
+  .form-control::placeholder, textarea::placeholder {
+    color: #ff9999;
+  }
+
+  hr.border-danger {
+    border-top: 2px solid #ff1a1a;
+  }
+
+  /* Красная линия под заголовком */
+  h2.page-header {
+    color: #ff4c4c;
+    font-weight: 700;
+    border-bottom: 2px solid #ff1a1a;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Флеш-сообщения */
+  .flash-message {
+    margin: 15px 0;
+    padding: 10px 15px;
+    border-radius: 5px;
+  }
+  .flash-success {
+    background-color: #2d551d;
+    color: #d4f8d4;
+    border: 1px solid #4caf50;
+  }
+  .flash-danger {
+    background-color: #551515;
+    color: #f8d4d4;
+    border: 1px solid #f44336;
+  }
+  .flash-warning {
+    background-color: #554414;
+    color: #f8f1d4;
+    border: 1px solid #ff9800;
+  }
+</style>
+
+<div class="container-fluid p-0">
+  <h2 class="page-header">Управление пользователями</h2>
+
+  <p style="color: #ff9999; font-weight: 600; margin-bottom: 1rem;">
+    Всего пользователей: {{ users|length }}
+  </p>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="table-responsive">
+    <table class="table table-bordered rating-table align-middle">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>UUID</th>
+          <th>Никнейм</th>
+          <th>Telegram</th>
+          <th>Email</th>
+          <th>Очки</th>
+          <th>Решено заданий</th>
+          <th>Первое решение</th>
+          <th>Invite код</th>
+          <th>Администратор</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ user.uuid }}</td>
+          <td>{{ user.nickname or '—' }}</td>
+          <td>
+            {% if user.telegram %}
+              <a href="https://t.me/{{ user.telegram }}" target="_blank" style="color: #ff4c4c;">{{ user.telegram }}</a>
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td>{{ user.email or '—' }}</td>
+          <td>{{ user.score or 0 }}</td>
+          <td>{{ user.solved_vms or 0 }}</td>
+          <td>{{ user.first_bloods or 0 }}</td>
+          <td>{{ user.invite_code or '—' }}</td>
+          <td>{{ 'Да' if user.is_admin else 'Нет' }}</td>
+          <td>
+            <form method="POST" action="{{ url_for('toggle_admin', user_uuid=user.uuid) }}" style="display:inline;">
+              <button type="submit" class="action-btn">
+                {% if user.is_admin %}
+                  Снять admin
+                {% else %}
+                  Назначить admin
+                {% endif %}
+              </button>
+            </form>
+            <form method="POST" action="{{ url_for('delete_user', user_uuid=user.uuid) }}" style="display:inline;" onsubmit="return confirm('Вы уверены, что хотите удалить пользователя?');">
+              <button type="submit" class="action-btn">Удалить</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="11" class="text-center" style="color: #ff9999;">Нет пользователей</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

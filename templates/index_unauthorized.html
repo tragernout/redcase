@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RedCase — Платформа кибербезопасности</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      background-color: #0a0a0a; /* Очень тёмный фон */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 720px;
+    }
+
+    h1 {
+      font-weight: 900;
+      font-size: 5rem;
+      letter-spacing: 0.25em;
+      color: #ff1a1a;
+      text-shadow: 0 0 15px #ff0000;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    p.lead {
+      font-size: 1.5rem;
+      color: #ddd;
+      margin-bottom: 3rem;
+      line-height: 1.5;
+      text-shadow: 0 0 4px rgba(255, 0, 0, 0.4);
+    }
+
+    .btn-redcase {
+      background-color: #ff1a1a;
+      border: none;
+      color: #fff;
+      padding: 1rem 3rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      border-radius: 50px;
+      letter-spacing: 0.15em;
+      box-shadow: 0 0 20px #ff3333;
+      transition: all 0.3s ease;
+      margin-right: 1rem;
+      text-transform: uppercase;
+    }
+    .btn-redcase:hover {
+      background-color: #e60000;
+      box-shadow: 0 0 30px #ff4c4c;
+      transform: scale(1.05);
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .btn-outline-light {
+      padding: 1rem 3rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      border-radius: 50px;
+      border: 2px solid #ff1a1a;
+      color: #ff1a1a;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: all 0.3s ease;
+    }
+    .btn-outline-light:hover {
+      background-color: #ff1a1a;
+      color: #fff;
+      box-shadow: 0 0 20px #ff4c4c;
+      transform: scale(1.05);
+      text-decoration: none;
+    }
+
+    nav {
+      margin-top: 3rem;
+    }
+    nav a {
+      color: #ff1a1a;
+      font-weight: 600;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-size: 1.1rem;
+      letter-spacing: 0.1em;
+      transition: color 0.3s ease;
+      text-transform: uppercase;
+    }
+    nav a:hover {
+      color: #ff4c4c;
+      text-shadow: 0 0 8px #ff4c4c;
+    }
+
+    @media (max-width: 576px) {
+      h1 {
+        font-size: 3rem;
+        letter-spacing: 0.15em;
+      }
+      p.lead {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+      }
+      .btn-redcase, .btn-outline-light {
+        width: 100%;
+        margin: 0 0 1rem 0;
+        padding: 1rem 0;
+        font-size: 1.1rem;
+      }
+      nav {
+        margin-top: 2rem;
+      }
+      nav a {
+        font-size: 1rem;
+        margin: 0 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>RedCase</h1>
+    <p class="lead">
+      Ваша платформа для развития навыков кибербезопасности. Решайте задачи, взламывайте виртуальные машины и соревнуйтесь с лучшими.
+    </p>
+    <div>
+      <a href="{{ url_for('register') }}" class="btn btn-redcase">Регистрация</a>
+      <a href="{{ url_for('login') }}" class="btn btn-outline-light">Вход</a>
+    </div>
+    <nav>
+      <a href="{{ url_for('rating') }}">Рейтинг</a>
+      <a href="{{ url_for('servers') }}">Сервера</a>
+    </nav>
+  </div>
+</body>
+</html>

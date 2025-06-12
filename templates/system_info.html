@@ -1,0 +1,110 @@
+{% extends "base_admin.html" %}
+
+{% block title %}Информация о системе{% endblock %}
+
+{% block content %}
+<style>
+  .info-table {
+    background-color: #1a1a1a !important;
+    color: #ffcccc !important;
+    border-color: #ff1a1a !important;
+    table-layout: fixed;
+    word-wrap: break-word;
+  }
+
+  .info-table th {
+    background-color: #550000 !important;
+    color: #ffdddd !important;
+    font-weight: 700;
+    width: 25%;
+    vertical-align: top;
+  }
+
+  .info-table td {
+    background-color: #1a1a1a !important;
+    color: #ffcccc !important;
+    width: 75%;
+    white-space: pre-wrap;
+  }
+
+  .info-table tbody tr:nth-child(odd) {
+    background-color: #2a2a2a !important;
+  }
+
+  h2.page-header {
+    color: #ff4c4c;
+    font-weight: 700;
+    border-bottom: 2px solid #ff1a1a;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+</style>
+
+<div class="container-fluid p-0">
+  <h2 class="page-header">Информация о системе</h2>
+
+  <table class="table table-bordered info-table">
+    <tbody>
+      <tr>
+        <th>Операционная система</th>
+        <td>{{ system.os }}</td>
+      </tr>
+      <tr>
+        <th>Дистрибутив / версия</th>
+        <td>{{ system.distro }}</td>
+      </tr>
+      <tr>
+        <th>Версия ядра</th>
+        <td>{{ system.kernel }}</td>
+      </tr>
+      <tr>
+        <th>Архитектура</th>
+        <td>{{ system.architecture }}</td>
+      </tr>
+      <tr>
+        <th>CPU</th>
+        <td>{{ system.cpu_model }} ({{ system.cpu_cores }} ядер, {{ system.cpu_threads }} потоков)</td>
+      </tr>
+      <tr>
+        <th>Объем оперативной памяти</th>
+        <td>{{ system.total_ram }} (Свободно: {{ system.free_ram }})</td>
+      </tr>
+      <tr>
+        <th>Информация о дисках</th>
+        <td>{%- for disk in system.disks -%}{{- disk.device }} — {{ disk.size }} (использовано: {{ disk.used }}, свободно: {{ disk.free }}){% if not loop.last %}<br>{% endif -%}{%- endfor -%}</td>
+      </tr>
+      <tr>
+        <th>Сетевые интерфейсы</th>
+        <td>{%- for iface in system.network_interfaces -%}<b>{{- iface.name }}</b>: {{ iface.addresses | join(', ') }}{% if not loop.last %}<br>{% endif -%}{%- endfor -%}</td>
+      </tr>
+      <tr>
+        <th>Загрузка системы (load average)</th>
+        <td>{{ system.load_average }}</td>
+      </tr>
+      <tr>
+        <th>Время работы (uptime)</th>
+        <td>{{ system.uptime }}</td>
+      </tr>
+      <tr>
+        <th>Версии важных компонентов</th>
+        <td>
+          Python: {{ system.python_version }}<br>
+          Flask: {{ system.flask_version }}<br>
+          БД: {{ system.db_version }}<br>
+          Другие: {{ system.other_versions | join(', ') }}
+        </td>
+      </tr>
+      <tr>
+        <th>Активные процессы (топ 5 по CPU)</th>
+        <td>
+          <ol style="margin-bottom: 0;">
+          {%- for proc in system.top_processes -%}
+            <li>{{- proc.name }} (PID: {{ proc.pid }}) — CPU: {{ proc.cpu_percent }}%, Память: {{ proc.memory_percent }}%</li>
+          {%- endfor -%}
+          </ol>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

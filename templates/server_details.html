@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ vm.name }} — RedCase{% endblock %}
+
+{% block content %}
+<style>
+  .form-control, .form-select, textarea {
+    background-color: #1a1a1a;
+    color: #ffcccc;
+    border: 1px solid #ff1a1a;
+  }
+
+  .form-control::placeholder, textarea::placeholder {
+    color: #ff9999;
+  }
+
+  .btn-danger {
+    background-color: #770000;
+    border: none;
+  }
+
+  .btn-danger:hover {
+    background-color: #ff0000;
+  }
+</style>
+
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-md-4 text-center mb-4">
+      <h2 style="color: #ff1a1a; font-weight: 900;">{{ vm.name }}</h2>
+      <div class="rounded-circle d-inline-block" style="width: 120px; height: 120px; border: 3px solid #ff1a1a; box-shadow: 0 0 15px #ff1a1a; background-color: #1a1a1a; display: flex; align-items: center; justify-content: center;">
+        <span style="color: white; font-size: 1.2rem;">{{ vm.platform }}</span>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <h3 style="color: #ff1a1a; border-bottom: 2px solid #ff1a1a; padding-bottom: 0.5rem; margin-bottom: 1rem;">Информация о машине</h3>
+
+      <p style="color: #ccc;">Платформа: <strong>{{ vm.platform }}</strong></p>
+      <p style="color: #ccc;">IP-адрес: <strong>{{ vm.ip_address }}</strong></p>
+      <p style="color: #ccc;">Сложность: <strong>{{ vm.difficulty }} / 5</strong></p>
+      <p style="color: #ccc;">Очки за взлом: <strong>{{ vm.score }}</strong></p>
+      <p style="color: #ccc;">Описание: <br><em>{{ vm.description }}</em></p>
+      <p style="color: #ccc;">Решено: <strong>{{ vm.solve_count }}</strong></p>
+      <p style="color: #ccc;">Автор: <strong>{{ author_name }}</strong></p>
+      <p style="color: #ccc;">First Blood: <strong>{{ first_blood_name }}</strong></p>
+
+      <h3 class="mt-4" style="color: #ff1a1a; border-bottom: 2px solid #ff1a1a; padding-bottom: 0.5rem;">Сдача флага</h3>
+
+      {% if not already_solved %}
+        <form method="POST" action="{{ url_for('submit_flag', vm_uuid=vm.uuid) }}">
+          <div class="form-group">
+            <label for="flagInput" style="color: #ccc;">Введите флаг:</label>
+            <input type="text" class="form-control" id="flagInput" name="flag" placeholder="Flag{...}" required>
+          </div>
+          <button type="submit" class="btn btn-danger btn-sm mt-2">Отправить</button>
+        </form>
+      {% else %}
+        <p style="color: #28a745; font-weight: bold;">✅ Вы уже выполнили это задание. Отличная работа!</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
